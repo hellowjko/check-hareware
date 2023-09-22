@@ -1,0 +1,47 @@
+Product_Serial,Network_card,IP,manufacturer,product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,MAX_PEF_state,p-state,c-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info
+VMware-56 4d 8a af b3 38 8a 7e-40 46 9a 50 a4 61 48 ba,ens160,192.168.102.167/23,VMware Inc.,VMware Virtual Platform,548 EE,550,4.19.90-2102.2.0.0062.ctl2.x86_64,BIOS,en_US.UTF-8,"is-enabled: [enabled]
+is-active: [inactive]","is-enabled: [enabled]
+is-active: [active]",2,"ID    model_name                                      cpu_cores  processor_num  cpu_MHz  Manufacturer
+CPU1  11th_Gen_Intel(R)_Core(TM)_i5-1135G7_@_2.40GHz  4          4              2419     GenuineIntel
+CPU2  none                                            0          0              none     none","NUMA node(s):                    1
+NUMA node0 CPU(s):               0-7",closed,close,vm,none/no/no,none,"",/dev/nvme0n1                                                      ,"NAME=nvme0n1    MAJ:MIN=259:0  RM=0  SIZE=60G    RO=0  TYPE=disk  MOUNTPOINT=
+NAME=nvme0n1p1  MAJ:MIN=259:1  RM=0  SIZE=300M   RO=0  TYPE=part  MOUNTPOINT=/boot
+NAME=nvme0n1p2  MAJ:MIN=259:2  RM=0  SIZE=30G    RO=0  TYPE=part  MOUNTPOINT=/var
+NAME=nvme0n1p3  MAJ:MIN=259:3  RM=0  SIZE=19.7G  RO=0  TYPE=part  MOUNTPOINT=/
+NAME=nvme0n1p4  MAJ:MIN=259:4  RM=0  SIZE=1K     RO=0  TYPE=part  MOUNTPOINT=
+NAME=nvme0n1p5  MAJ:MIN=259:5  RM=0  SIZE=10G    RO=0  TYPE=part  MOUNTPOINT=/home","DISK    SIZE  Device_Model  Rotation_Rate  Form_Factor
+nvme0n1  60G   none          none           none
+sr0      1.7G  none          none           none",2.8Gi,8,"Locator     Size    Speed  Manufacturer   Part_Number
+RAM_slot_#0  2048MB  none   Not_Specified  Not_Specified
+RAM_slot_#1  1024MB  none   Not_Specified  Not_Specified
+RAM_slot_#2  256MB   none   Not_Specified  Not_Specified
+RAM_slot_#3  128MB   none   Not_Specified  Not_Specified
+RAM_slot_#4  64MB    none   Not_Specified  Not_Specified
+RAM_slot_#5  32MB    none   Not_Specified  Not_Specified
+RAM_slot_#6  8MB     none   Not_Specified  Not_Specified
+RAM_slot_#7  4MB     none   Not_Specified  Not_Specified",2,"bus_info     netcard  numa_node  Now_Speed  Net_Speed  Net_mtu  Vendor  Product
+0000:13:00.0  ens224   -1         10000Mb/s  10Gbit/s   1500     VMware  VMXNET3_Ethernet_Controller
+0000:03:00.0  ens160   -1         10000Mb/s  10Gbit/s   1500     VMware  VMXNET3_Ethernet_Controller"
+Parallels-68 97 C1 2F C8 16 40 78 A7 2F 5A C5 91 3C FF 41,eth1,192.168.103.135/23,Parallels Software International Inc.,Parallels Virtual Platform,299,322,3.10.0-1160.el7.x86_64,BIOS,en_US.UTF-8,"is-enabled: [enabled]
+is-active: [active]","is-enabled: [enabled]
+is-active: [active]",1,"ID    model_name  cpu_cores  processor_num  cpu_MHz  Manufacturer
+CPU1  none        0          0              none     none","NUMA node(s):          1
+NUMA node0 CPU(s):     0,1",closed,close,vm,none/no/no,none,"",/dev/mapper/centos-root,"NAME=centos-root         MAJ:MIN=253:0  RM=0  SIZE=17G  RO=0  TYPE=lvm  MOUNTPOINT=/","DISK  SIZE   Device_Model  Rotation_Rate  Form_Factor
+sda    20G    none          none           none
+sr0    1024M  none          none           none",1.8G,1,"Locator  Size    Speed    Manufacturer   Part_Number
+DIMM_#0   2048MB  667MT/s  Not_Specified  Not_Specified",2,"bus_info     netcard  numa_node  Now_Speed  Net_Speed  Net_mtu  Vendor  Product
+0000:00:05.0  eth0     none       none       none       1500     none    none
+0000:00:06.0  eth1     none       none       none       1500     none    none"
+Parallels-29 83 99 BB 71 14 4D F5 B1 33 04 DF 64 D5 5D 89,enp0s5,192.168.103.136/23,Parallels Software International Inc.,Parallels Virtual Platform,553 EE,555,4.19.90-2102.2.0.0062.ctl2.x86_64,UEFI,en_US.UTF-8,"is-enabled: [enabled]
+is-active: [active]","is-enabled: [disabled]
+is-active: [inactive]",1,"ID    model_name  cpu_cores  processor_num  cpu_MHz  Manufacturer
+CPU1  none        0          0              none     none","NUMA node(s):                    1
+NUMA node0 CPU(s):               0,1",opened,close,vm,none/no/no,none,"",/dev/sda                                                   ,"NAME=sda1  MAJ:MIN=8:1  RM=0  SIZE=200M   RO=0  TYPE=part  MOUNTPOINT=/boot/efi
+NAME=sda2  MAJ:MIN=8:2  RM=0  SIZE=1G     RO=0  TYPE=part  MOUNTPOINT=/boot
+NAME=sda3  MAJ:MIN=8:3  RM=0  SIZE=50G    RO=0  TYPE=part  MOUNTPOINT=/
+NAME=sda4  MAJ:MIN=8:4  RM=0  SIZE=12.8G  RO=0  TYPE=part  MOUNTPOINT=/var
+NAME=sda   MAJ:MIN=8:0  RM=0  SIZE=64G    RO=0  TYPE=disk  MOUNTPOINT=","DISK  SIZE  Device_Model  Rotation_Rate  Form_Factor
+sda    64G   none          none           none
+sr0    1.7G  none          none           none",3.8Gi,1,"Locator  Size    Speed    Manufacturer   Part_Number
+DIMM_#0   4096MB  667MT/s  Not_Specified  Not_Specified",1,"bus_info     netcard  numa_node  Now_Speed  Net_Speed  Net_mtu  Vendor  Product
+0000:00:05.0  enp0s5   none       none       none       1500     none    none"

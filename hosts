@@ -1,0 +1,14 @@
+[servers]
+192.168.103.135
+192.168.103.136
+192.168.102.167
+
+[servers:vars]
+ansible_ssh_user=root
+ansible_ssh_port=22
+ansible_ssh_pass=root
+
+# ansible_become=yes
+# ansible_become_method=sudo
+# ansible_become_user=root
+# ansible_become_pass=

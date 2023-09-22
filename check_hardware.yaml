@@ -1,0 +1,56 @@
+---
+  - hosts: servers
+
+    tasks:
+
+      - name: create tmp directory
+        file: 
+          path: /tmp/66_tmp_dir
+          state: directory
+
+      - name: copy ctyunos tar file
+        copy:
+          src: files/tar-1.32-1.ctl2.x86_64.rpm
+          dest: /tmp/66_tmp_dir/
+        when: ansible_machine == "x86_64" and ansible_distribution == "ctyunos"
+
+      - name: copy centos tar file
+        copy:
+          src: files/tar-1.26-35.el7.x86_64.rpm
+          dest: /tmp/66_tmp_dir/
+        when: ansible_machine == "x86_64" and ansible_distribution == "CentOS"
+
+      - name: copy scripts file
+        copy: 
+          src: scripts/
+          dest: /tmp/66_tmp_dir/
+
+      - name: copy raid_cmd gzip file
+        copy:
+          src: files/raid_cmd.tar.gz
+          dest: /tmp/66_tmp_dir/
+
+      - name: running check hardware script
+        shell:
+          cmd: |
+            cd /tmp/66_tmp_dir/
+            sh sys_info.sh
+
+      - name: find file
+        find:
+          paths: /tmp/66_tmp_dir/
+          patterns: "*csv"
+          recurse: no
+        register: file_name
+
+      - name: fetch file
+        fetch:
+          src: "{{ item.path }}"
+          dest: "/tmp/work_home/"
+          flat: yes
+        with_items: "{{ file_name.files }}"
+
+      - name: clean tmp directory
+        file:
+          path: /tmp/66_tmp_dir
+          state: absent
