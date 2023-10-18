@@ -59,7 +59,8 @@ manufacturer=$(dmidecode -s system-manufacturer | sed "s/,//g")
 RPM_SYSTEM_NUM=$(/usr/bin/yum history list 1 2>/dev/null | grep -Ew '^[ ]+1 ' | awk -F "|" '{print $NF}'|xargs)
 RPM_INSTALL_NUM=$(rpm -qa|wc -l 2>/dev/null)
 Kernel_Version=$(uname -r)
-echo -e "Product_Serial\tNetwork_card\tIP\tmanufacturer\tproduct_name\tRPM_System_count\tRPM_Install_total\tKernel_Version\tSystem_boot_mode\tCharacter\tnetwork\tNetworkManager\tCPU_NUM\tCPU_INFO\tCPU_NUMA\tkvm-state\tVt-d\tMAX_PEF_state\tp-state\tc-state\tDisk_Raid\tDisk_Sys\tDisk_Sys_Part\tDisk_Info\tMem_Total\tMem_Num\tMem_Info\tNet_Card_Num\tNet_Info" > ${host_ip_file}_check.csv
+
+echo -e "Product_Serial,Network_card,IP,manufacturer,product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,MAX_PEF_state,P-state,C-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info" > ${host_ip_file}_check.csv
 if [ -d /sys/firmware/efi -a -d /boot/efi ]; then
     BOOT_MODE="UEFI"
 else
@@ -126,8 +127,8 @@ sh disk_raid.sh
 local_disk_raid=$(cat disk_raid)
 
 sh disk_sys.sh
-local_disk_sys=$(cat disk_sys | head -n 1)
-local_disk_sys_part=$(cat disk_sys | sed 1d)
+local_disk_sys=$(cat disk_sys)
+local_disk_sys_part=$(cat disk_sys_part)
 
 sh disk_info.sh
 local_disk_info=$(cat disk_info)
@@ -141,9 +142,7 @@ local_net_info=$(cat net_info)
 net_card_num=$(($(cat net_info | wc -l) -1))
 
 
-echo -e "${Product_Serial}\t${host_net}\t${host_ip}\t${manufacturer}\t${product_name}\t${RPM_SYSTEM_NUM}\t${RPM_INSTALL_NUM}\t${Kernel_Version}\t${BOOT_MODE}\t${CHAS}\t${network_state}\t${NetworkManager_state}\t${cpu_num}\t${local_cpu_info}\t${local_cpu_numa}\t${local_cpu_state}\t${local_disk_raid}\t${local_disk_sys}\t\"${local_disk_sys_part}\t${local_disk_info}\t${local_mem_count}\t${local_mem_info}\t${net_card_num}\t${local_net_info}" >> ${host_ip_file}_check.csv
-
-sed -i 's/\t/,/g' ${host_ip_file}_check.csv
+echo -e "${Product_Serial},${host_net},${host_ip},${manufacturer},${product_name},${RPM_SYSTEM_NUM},${RPM_INSTALL_NUM},${Kernel_Version},${BOOT_MODE},${CHAS},${network_state},${NetworkManager_state},${cpu_num},${local_cpu_info},${local_cpu_numa},${local_cpu_state},${local_disk_raid},${local_disk_sys},${local_disk_sys_part},${local_disk_info},${local_mem_count},${local_mem_info},${net_card_num},${local_net_info}" >> ${host_ip_file}_check.csv
 
 
 if [ "${raid_cmd_state}" == "yes" ];then

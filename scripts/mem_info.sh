@@ -29,8 +29,8 @@ sed -i '/Unknown/d' mem_info
 file=$(cat mem_info)
 echo -e "\"${file}\"" | column -t > mem_info
 
-echo -e "Total\tNumber" > mem_num
+echo -e "Total,Number" > mem_num
 # mem
 mem_total=$(free -h | grep "Mem:" | awk '{print $2}')
 mem_count=$(($(cat mem_info | wc -l) -1))
-echo -e "${mem_total}\t${mem_count}" >> mem_num
+echo -e "${mem_total},${mem_count}" >> mem_num

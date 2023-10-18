@@ -76,4 +76,4 @@ else
     MAX_PEF_state="$(hostnamectl | grep -w 'Chassis'|awk '{print $NF}')"
 fi
 
-echo -e "${kvm_state}\t${vt_d}\t${MAX_PEF_state}\t${cpupower_driver}/${cpupower_Supported}/${cpupower_Active}\t${ctstate_state}" > cpu_state
+echo -e "${kvm_state},${vt_d},${MAX_PEF_state},${cpupower_driver}/${cpupower_Supported}/${cpupower_Active},${ctstate_state}" > cpu_state

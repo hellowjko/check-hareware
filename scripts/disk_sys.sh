@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-#服务器序列号
-serial_num=$(dmidecode -s system-serial-number)
 # disk
 disk_nvme(){
 disk=$(lsblk -P | grep -v "sr0" | awk -F" " '{print $1}' | sed 's/\"//g' | awk -F= '{print $2}' | sort | uniq)
@@ -18,7 +16,7 @@ done
 
 lsblk | grep "/boot" | grep "sd"
 if [ $? -eq 0 ];then
-    disk_sys=$(df -h|awk '$NF=="/" {print $1}'|sed 's/[0-9]//g')
+    disk_sys=$(df -h|grep -w '/'|awk '{print $1}'|sed 's#/dev/##g'|sed 's/[0-9]//g')
 else
     lsblk | grep "/boot" | grep "nvme"
     if [ $? -eq 0 ];then
@@ -28,8 +26,6 @@ else
     fi
 fi       
 
-disk_sys_part=$(lsblk -P ${disk_sys} | sort)
-echo -e "${disk_sys}\n${disk_sys_part}" > disk_sys
-sed -i 's/\"//g' disk_sys
-file=$(cat disk_sys)
-echo -e "${file}\"" | column -t > disk_sys
+echo "${disk_sys}" > disk_sys
+echo "$(lsblk -P ${disk_sys} | sort)" > disk_sys_part
+
