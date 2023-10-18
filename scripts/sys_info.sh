@@ -31,7 +31,7 @@ elif
         break
     else
         tar zxf raid_cmd.tar.gz
-        rpm -ivh raid_cmd/x86_64/*.rpm > /dev/null
+        rpm -ivh raid_cmd/aarch64/*.rpm > /dev/null
         raid_cmd_state="yes"
     fi
 else
