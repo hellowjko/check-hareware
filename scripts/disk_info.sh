@@ -11,5 +11,5 @@ do
     Form_Factor="$(smartctl  info /dev/${d} | grep -w "^Form Factor:"|awk -F: '{print $NF}'|xargs |sed 's/ /_/g')"
     echo -e "${d} ${DSIZE:-none} ${DModel_Number:-none} ${DTYPE:-none} ${Form_Factor:-none}" >> disk_info
 done
-file=`cat disk_info`
+file=$(cat disk_info)
 echo -e "\"${file}\"" | column -t > disk_info

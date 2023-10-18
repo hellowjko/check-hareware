@@ -10,7 +10,7 @@ else
 fi
 }
 # cpu架构
-arch=`uname -p`
+arch=$(uname -p)
 if [ "$arch" == "x86_64" ];then
     which mailx 2> /dev/null && echo $? > /dev/null
     if [ $? -eq 0 ];then
@@ -41,24 +41,24 @@ else
 fi
 
 server_ip=192.168.103.6
-local_net=`ip add | grep -w "inet" | grep -v "127.0.0.1" | awk '{print $NF}'`
+local_net=$(ip add | grep -w "inet" | grep -v "127.0.0.1" | awk '{print $NF}')
 for i in ${local_net};do
-    ping -n -I $i -c 2 ${server_ip} > /dev/null
+    ping -n -I ${i} -c 2 ${server_ip} > /dev/null
     if [ $? -eq 0 ];then
         host_net=${i}
-        host_ip=`ip add | grep -w "inet" | grep "${i}" | awk -F" " '{print $2}'`
-        host_ip_file=`ip add | grep -w "inet" | grep "${i}" | awk -F" " '{print $2}' | awk -F/ '{print $1}'`
+        host_ip=$(ip add | grep -w "inet" | grep "${i}" | awk -F" " '{print $2}')
+        host_ip_file=$(ip add | grep -w "inet" | grep "${i}" | awk -F" " '{print $2}' | awk -F/ '{print $1}')
     else
         echo "No!" > /dev/null
     fi
 done
 
-product_name=`dmidecode -s system-product-name`
-Product_Serial=`dmidecode -s system-serial-number`
-manufacturer=`dmidecode -s system-manufacturer | sed "s/,//g"`
+product_name=$(dmidecode -s system-product-name)
+Product_Serial=$(dmidecode -s system-serial-number)
+manufacturer=$(dmidecode -s system-manufacturer | sed "s/,//g")
 RPM_SYSTEM_NUM=$(/usr/bin/yum history list 1 2>/dev/null | grep -Ew '^[ ]+1 ' | awk -F "|" '{print $NF}'|xargs)
 RPM_INSTALL_NUM=$(rpm -qa|wc -l 2>/dev/null)
-Kernel_Version=`uname -r`
+Kernel_Version=$(uname -r)
 echo -e "Product_Serial\tNetwork_card\tIP\tmanufacturer\tproduct_name\tRPM_System_count\tRPM_Install_total\tKernel_Version\tSystem_boot_mode\tCharacter\tnetwork\tNetworkManager\tCPU_NUM\tCPU_INFO\tCPU_NUMA\tkvm-state\tVt-d\tMAX_PEF_state\tp-state\tc-state\tDisk_Raid\tDisk_Sys\tDisk_Sys_Part\tDisk_Info\tMem_Total\tMem_Num\tMem_Info\tNet_Card_Num\tNet_Info" > ${host_ip_file}_check.csv
 if [ -d /sys/firmware/efi -a -d /boot/efi ]; then
     BOOT_MODE="UEFI"
@@ -108,36 +108,36 @@ else
     NetworkManager_state='No_service'
 fi
 
-cpu_num=`cat /proc/cpuinfo | grep "^physical id" | sort | uniq | wc -l`
+cpu_num=$(cat /proc/cpuinfo | grep "^physical id" | sort | uniq | wc -l)
 
 
 sh cpu_info.sh
-local_cpu_info=`cat cpu_info`
+local_cpu_info=$(cat cpu_info)
 
 
-numa=`lscpu | grep "NUMA"`
+numa=$(lscpu | grep "NUMA")
 echo -e "\"${numa}\"" > cpu_numa
-local_cpu_numa=`cat cpu_numa`
+local_cpu_numa=$(cat cpu_numa)
 
 sh cpu_state.sh
-local_cpu_state=`cat cpu_state`
+local_cpu_state=$(cat cpu_state)
 
 sh disk_raid.sh
-local_disk_raid=`cat disk_raid`
+local_disk_raid=$(cat disk_raid)
 
 sh disk_sys.sh
-local_disk_sys=`cat disk_sys | head -n 1`
-local_disk_sys_part=`cat disk_sys | sed 1d`
+local_disk_sys=$(cat disk_sys | head -n 1)
+local_disk_sys_part=$(cat disk_sys | sed 1d)
 
 sh disk_info.sh
-local_disk_info=`cat disk_info`
+local_disk_info=$(cat disk_info)
 
 sh mem_info.sh
-local_mem_info=`cat mem_info`
-local_mem_count=`cat mem_num | tail -1`
+local_mem_info=$(cat mem_info)
+local_mem_count=$(cat mem_num | tail -1)
 
 sh net_info.sh
-local_net_info=`cat net_info`
+local_net_info=$(cat net_info)
 net_card_num=$(($(cat net_info | wc -l) -1))
 
 

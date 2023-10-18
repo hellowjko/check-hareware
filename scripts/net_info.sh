@@ -1,6 +1,5 @@
 #!/bin/bash
 #
-serial_num=`dmidecode -s system-serial-number`
 echo -e "bus_info netcard numa_node Now_Speed Net_Speed Net_mtu Vendor Product" > net_info
 net_all=($(cat /proc/net/dev|sed '1,2d'|awk -F: '{print $1}'|sed 's#:##g'|sed 's# ##g'|egrep -v 'lo|bond'))
 ## lshw命令将网卡相关信息输出到一个文件中
@@ -31,5 +30,5 @@ do
     echo -e "${bus_info:-none} ${net} ${numa_node:-none} ${Now_Speed:-none} ${Net_Speed:-none} ${Net_mtu:-N\A} ${Vendor:-none} ${Product:-none}" >> net_info
 done
 rm -rf net_card_all
-file=`cat net_info`
+file=$(cat net_info)
 echo -e "\"${file}\"" | column -t > net_info

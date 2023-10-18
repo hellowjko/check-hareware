@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 # 序列号
-serial_num=`dmidecode -s system-serial-number`
->disk_raid
+serial_num=$(dmidecode -s system-serial-number)
+> disk_raid
 ## H3C ---
 manufacturer=$(dmidecode -t system|grep Manufacturer|grep -wi 'h3c'|wc -l)
 if [ ${manufacturer} -eq 1 ]; then
@@ -33,5 +33,5 @@ else
         done
     fi
 fi
-file=`cat disk_raid`
+file=$(cat disk_raid)
 echo -e "\"${file}\"" | column -t > disk_raid

@@ -2,9 +2,9 @@
 #
 echo -e "kvm-state\tVt-d\tMAX_PEF_state\tp-state\tc-state" > cpu_state
 # cpu number
-cpu_num=`cat /proc/cpuinfo | grep "^physical id" | sort | uniq | wc -l`
+cpu_num=$(cat /proc/cpuinfo | grep "^physical id" | sort | uniq | wc -l)
 # numa
-numa=`lscpu | grep "NUMA"`
+numa=$(lscpu | grep "NUMA")
 # cpu p-stats c-stats
 cpupower_driver=$(cpupower frequency-info|grep -wE '^[ ]+driver:'|awk '{print $2}'|xargs)
 cpupower_Supported=$(cpupower frequency-info|grep -wE '^[ ]+Supported:'|awk '{print $2}'|xargs)
