@@ -8,33 +8,33 @@
           path: /tmp/66_tmp_dir
           state: directory
 
-      - name: copy ctyunos tar file
+      - name: copy x86_64 ctyunos tar file
         copy:
           src: files/tar-1.32-1.ctl2.x86_64.rpm
           dest: /tmp/66_tmp_dir/
         when: ansible_machine == "x86_64" and ansible_distribution == "ctyunos"
 
-      - name: copy centos tar file
+      - name: copy aarch64 ctyunos tar file
         copy:
-          src: files/tar-1.26-35.el7.x86_64.rpm
+          src: files/tar-1.32-1.ctl2.aarch64.rpm
           dest: /tmp/66_tmp_dir/
-        when: ansible_machine == "x86_64" and ansible_distribution == "CentOS"
+        when: ansible_machine == "aarch64" and ansible_distribution == "ctyunos"
 
       - name: copy scripts file
         copy: 
           src: scripts/
           dest: /tmp/66_tmp_dir/
 
-      - name: copy raid_cmd gzip file
+      - name: copy cmd gzip file
         copy:
-          src: files/raid_cmd.tar.gz
+          src: files/cmd.tar.gz
           dest: /tmp/66_tmp_dir/
 
       - name: running check hardware script
         shell:
           cmd: |
             cd /tmp/66_tmp_dir/
-            sh sys_info.sh
+            sh check-hardware.sh
 
       - name: find file
         find:

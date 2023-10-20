@@ -13,7 +13,7 @@ for i in ${ip_all};do
         ping -n -I ${a} -c 1 ${i} > /dev/null
         if [ $? -eq 0 ];then
             server_ip=${a}
-            sed -i "s/\(^server_ip=\).*/\1${server_ip}/" scripts/sys_info.sh
+            sed -i "s/\(^server_ip=\).*/\1${server_ip}/" scripts/check-hardware.sh
             break 2
         else
             echo "No!" > /dev/null
@@ -21,7 +21,7 @@ for i in ${ip_all};do
     done
 done
 
-echo -e "Product_Serial,Network_card,IP,manufacturer,product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,MAX_PEF_state,P-state,C-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info" > report/check_info.csv
+echo -e "Product_Serial,Network_card,IP,Manufacturer,Product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,Performance_Mode,P-state,C-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info" > report/check_info.csv
 
 ansible-playbook check_hardware.yaml -i hosts
 file_all=`ls /tmp/work_home | grep "csv" | sort`
