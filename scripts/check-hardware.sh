@@ -455,7 +455,7 @@ check_disk(){
 
 check_network(){
     net_all=($(cat /proc/net/dev|sed '1,2d'|awk -F: '{print $1}'|sed 's#:##g'|sed 's# ##g'|egrep -v 'lo|bond'))
-    > check_network
+    echo -e "Bus_info\tNetcard}\tNuma_node\tNow_Speed\tNet_Speed\tNet_mtu\tVendor\tProduct" > check_network
     lshw -C network 2>/dev/null > tmp_check_network.txt
     ## lshw命令将网卡相关信息输出到一个文件中
     for net in ${net_all[*]};do
