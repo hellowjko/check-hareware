@@ -21,13 +21,11 @@ env_tool(){
     elif [ "${OS_VER}" == "ctyunos" ] && [ "${ARCH}" == "x86_64" ]; then
         tar_cmd
         rpm -ivh cmd/x86_64/raid/*.rpm
-    elif [ "${OS_VER}" == "centos" ] && [ "${ARCH}" == "aarch64" ]; then
-        tar_cmd
-        rpm -ivh cmd/aarch64/lshw/lshw-B.02.18-17.el7.aarch64.rpm
+    elif [ "${OS_VER}" == "uos" ] && [ "${ARCH}" == "aarch64" ]; then
         rpm -ivh cmd/aarch64/raid/*.rpm
-    elif [ "${OS_VER}" == "ctyunos" ] && [ "${ARCH}" == "aarch64" ]; then
-        tar_cmd
-        rpm -ivh cmd/aarch64/raid/*.rpm
+#    elif [ "${OS_VER}" == "ctyunos" ] && [ "${ARCH}" == "aarch64" ]; then
+#        tar_cmd
+#        rpm -ivh cmd/aarch64/raid/*.rpm
     fi
 }
 
@@ -38,10 +36,12 @@ env_tool_uninstall(){
     elif [ "${OS_VER}" == "ctyunos" ] && [ "${ARCH}" == "x86_64" ]; then
         rpm -e mailx smartmontools storcli ssacli
         rm -rf /opt/*
-#    elif [ "${OS_VER}" == "centos" ] && [ "${ARCH}" == "aarch64" ]; then
-#        rpm -e pciutils mailx smartmontools storcli ssacli && rm -rf /opt/*
+    elif [ "${OS_VER}" == "uos" ] && [ "${ARCH}" == "aarch64" ]; then
+        rpm -e mailx smartmontools storcli
+        rm -rf /opt/*
 #    elif [ "${OS_VER}" == "ctyunos" ] && [ "${ARCH}" == "aarch64" ]; then
-#        rpm -e mailx smartmontools storcli ssacli && rm -rf /opt/*
+#        rpm -e mailx smartmontools storcli
+#        rm -rf /opt/*
     fi
 }
 
@@ -112,6 +112,7 @@ x86_server_cpu_check(){
 
     echo -e "\"$(cat check_cpu)\"" > local_cpu_info
     cpu_info=$(cat local_cpu_info)
+    cpu_nums=$(( $(cat check_cpu|wc -l) -1 ))
 }
 
 arm_server_cpu_check(){
@@ -165,18 +166,19 @@ arm_server_cpu_check(){
 
         echo -e "${info}\t${cpu_model}\t${cpu_cores}\t${processor_num}\t${cpu_MHz}\t${Manufacturer}" >> check_cpu.txt
     done
-    cat check_cpu.txt|column -t check_cpu
+    cat check_cpu.txt|column -t > check_cpu
     cpu_total=${#cpu_num[*]}
     Performance_Mode=${MAX_PEF_state:-none}
 
     echo -e "\"$(cat check_cpu)\"" > local_cpu_info
     cpu_info=$(cat local_cpu_info)
+    cpu_nums=$(( $(cat check_cpu|wc -l) -1 ))
 }
 
 check_server_cpu(){
     if [ "${ARCH}" == "x86_64" ]; then
         x86_server_cpu_check
-    elif [ "${ARCH}" == "x86_64" ]; then
+    elif [ "${ARCH}" == "aarch64" ]; then
         arm_server_cpu_check
     else
         echo "no support ${ARCH}"
@@ -185,15 +187,19 @@ check_server_cpu(){
 
 check_cpu_numa(){
     numa_nodes=$(lscpu 2>/dev/null| grep '^NUMA'| head -n 1)
-    numa_nodes_num=`echo $numa_nodes|  grep -owE "[0-9]+" | xargs `
+    numa_nodes_num=`echo $numa_nodes|  grep -owE "[0-9]+" | xargs`
     if [ "${CHIP_TYPE}" == 'kunpeng' ]  && [ "${numa_nodes_num}" != "2" ] ;then
         echo -e  "[${CHIP_TYPE}: NOT-OK]: ${numa_nodes}"   > cpu_numa_check
+        lscpu 2>/dev/null| grep '^NUMA' >> cpu_numa_check
     elif [ "${CHIP_TYPE}" == 'hygon' ]  && [ "${numa_nodes_num}" != "8" ] ;then
         echo -e  "[${CHIP_TYPE}: NOT-OK]: ${numa_nodes}"   > cpu_numa_check
+        lscpu 2>/dev/null| grep '^NUMA' >> cpu_numa_check
     elif [ "${CHIP_TYPE}" == 'Phytium' ] && [ "${numa_nodes_num}" != "16" ] ;then
         echo -e  "[${CHIP_TYPE}: NOT-OK]: ${numa_nodes}"   > cpu_numa_check
+        lscpu 2>/dev/null| grep '^NUMA' >> cpu_numa_check
     else
-        echo -e  "[${CHIP_TYPE}: OK]: ${numa_nodes}"   > cpu_numa_check
+        echo -e  "[${CHIP_TYPE}: OK]: ${numa_nodes}"  > cpu_numa_check
+        lscpu 2>/dev/null| grep '^NUMA' >> cpu_numa_check
     fi
     echo -e "\"$(cat cpu_numa_check)\"" > local_cpu_numa
     cpu_numa=$(cat local_cpu_numa)
@@ -321,9 +327,8 @@ check_server_mem(){
     done
     sed -i '/Unknown/d' check_mem.txt
     cat check_mem.txt|column -t > check_mem
-    MBN=$(( $(cat $check_mem.txt 2>/dev/null|wc -l) - 1 ))
+    MBN=$(( $(cat check_mem.txt 2>/dev/null|wc -l) - 1 ))
     mem_total=${MenT}
-    sed -i "3i Memory bar Number: ${MBN}" check_mem
     numa_nodes=$(lscpu 2>/dev/null| grep '^NUMA'| head -n 1)
     numa_nodes_num=`echo $numa_nodes|  grep -owE "[0-9]+"`
     first_numa_mem=$(ls /sys/devices/system/node/node0 | grep -iP 'memory\d+' | wc -l)
@@ -334,7 +339,7 @@ check_server_mem(){
             [ "${numa_mem}" != "${first_numa_mem}" ] && numa_mem_check="NOT-OK"
         done
     fi
-    mem_num=$(($(cat check_mem | wc -l) -1))
+    mem_num=$(( $(cat check_mem|wc -l) -1 ))
     echo -e "\"$(cat check_mem)\"" > local_mem_info
     mem_info=$(cat local_mem_info)
 }
@@ -480,7 +485,7 @@ check_network(){
         echo -e "${bus_info:-none}\t${net}\t${numa_node:-none}\t${Now_Speed:-none}\t${Net_Speed:-none}\t${Net_mtu:-N\A}\t${Vendor:-none}\t${Product:-none}" >> check_network
     done
     cat check_network|column -t > tmp_check_network
-    netcard_num=$(echo ${net_all} | wc -l)
+    netcard_num=$(cat /proc/net/dev|sed '1,2d'|awk -F: '{print $1}'|sed 's#:##g'|sed 's# ##g'|egrep -v 'lo|bond'|wc -l)
     echo -e "\"$(cat tmp_check_network)\"" > local_check_network
     net_info=$(cat local_check_network)
 }
@@ -556,8 +561,18 @@ check_system(){
         NetworkManager_state='No_service'
     fi
 }
+server_graphics_card_check(){
+    echo -e "NVIDIA GRAPHICS CARD check:" > graphics_card_check
+    GC_NUM=$(lspci |grep -w 'NVIDIA' 2>/dev/null|wc -l)
+    echo "Total: $GC_NUM" >> graphics_card_check
+    if [ ${GC_NUM} -ne 0 ]; then
+        lspci | grep -w 'NVIDIA' |awk -F "controller:" '{print "->"$2}' 2>/dev/null >> graphics_card_check
+    fi
+    echo -e "\"$(cat graphics_card_check)\"" > check_graphics_card
+    graphics_card=$(cat check_graphics_card)
+}
 output_file(){
-echo -e "${Product_Serial},${host_net},${host_ip},${manufacturer},${product_name},${RPM_SYSTEM_NUM},${RPM_INSTALL_NUM},${Kernel_Version},${BOOT_MODE},${CHAS},${network_state},${NetworkManager_state},${cpu_num},${cpu_info},${cpu_numa},${kvm_state},${vt_d},${Performance_Mode},${pstate_info},${cstate_info},${is_cstate_c1},${disk_raid},${System_Disk},${disk_sys},${disk_info},${mem_total},${mem_num},${mem_info},${netcard_num},${net_info}" >> ${host_ip_file}_check.csv
+echo -e "${Product_Serial},${host_net},${host_ip},${manufacturer},${product_name},${RPM_SYSTEM_NUM},${RPM_INSTALL_NUM},${Kernel_Version},${BOOT_MODE},${CHAS},${network_state},${NetworkManager_state},${cpu_nums},${cpu_info},${cpu_numa},${kvm_state},${vt_d},${Performance_Mode},${pstate_info},${cstate_info},${is_cstate_c1},${disk_raid},${System_Disk},${disk_sys},${disk_info},${mem_total},${mem_num},${mem_info},${netcard_num},${net_info},${graphics_card}" >> ${host_ip_file}_check.csv
 }
 ######################start#######################
 if [ $(grep -ic centos /etc/os-release | wc -l) -ge 1 ]; then
@@ -566,6 +581,8 @@ elif [ $(grep -ic ctyunos /etc/os-release | wc -l) -ge 1 ]; then
     OS_VER="ctyunos"
 elif [ $(grep -ic kylin /etc/os-release) -ge 1 ]; then
     OS_VER="kylin"
+elif [ $(grep -ic uos /etc/os-release) -ge 1 ]; then
+    OS_VER="uos"
 else
     OS_VER="other"
 fi
@@ -597,7 +614,7 @@ for i in ${local_net};do
     fi
 done
 
-echo -e "Product_Serial,Network_card,IP,manufacturer,product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,Performance_Mode,P-state,C-state,C1-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info" > ${host_ip_file}_check.csv
+echo -e "Product_Serial,Network_card,IP,manufacturer,product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,Performance_Mode,P-state,C-state,C1-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info,Graphics_card" > ${host_ip_file}_check.csv
 main(){
     env_tool
     check_server_brand
