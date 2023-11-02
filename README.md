@@ -1,4 +1,4 @@
-需要关闭selinux
+服务器需要关闭selinux
 
 1.安装ansible
 
