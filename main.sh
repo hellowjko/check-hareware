@@ -21,7 +21,7 @@ for i in ${ip_all};do
     done
 done
 
-echo -e "Product_Serial,Network_card,IP,Manufacturer,Product_name,RPM_System_count,RPM_Install_total,Kernel_Version,System_boot_mode,Character,network,NetworkManager,CPU_NUM,CPU_INFO,CPU_NUMA,kvm-state,Vt-d,Performance_Mode,P-state,C-state,C1-state,Disk_Raid,Disk_Sys,Disk_Sys_Part,Disk_Info,Mem_Total,Mem_Num,Mem_Info,Net_Card_Num,Net_Info" > report/check_info.csv
+echo -e "序列号,网卡,IP地址,制造商,型号,系统安装包数量,安装包总数量,内核版本,启动模式,字符集,network服务,NetworkManager服务,CPU数量,CPU信息,CPU_NUMA平和,kvm-state,Vt-d,cpu最大性能,P-state,C-state,C1-state,Raid盘,系统盘,系统盘分区信息,所有磁盘信息,总内存大小,内存数量,内存信息,物理网卡数量,物理网卡信息" > report/check_info.csv
 
 ansible-playbook check_hardware.yaml -i hosts
 file_all=`ls /tmp/work_home | grep "csv" | sort`
